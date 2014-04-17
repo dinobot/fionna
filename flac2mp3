@@ -3,5 +3,5 @@
   echo 'Dependencies are: fatsort, ffmpeg' 
 
 for a in *.flac; do
-  < /dev/null ffmpeg -i "$a" -qscale:a 0 ${a/%flac/mp3}
+  < /dev/null ffmpeg -i "$a" -qscale: 1 "${a[@]/%flac/mp3}"
 done
