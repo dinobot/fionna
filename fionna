@@ -1,5 +1,6 @@
 #!/bin/bash
-#check for dependencies
+#current version is 0.1
+
 out_path=/tmp
 
 if [[ $(ls *.flac 2>/dev/null) ]]
