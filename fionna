@@ -1,18 +1,23 @@
 #!/bin/bash
-#current version is 0.1
+#current version is 0.2
 
 out_path=/tmp
+dir_name=$(pwd | tr '/' '\n' | tail -n1 | tr ' ' '_')
 
 if [[ $(ls *.flac 2>/dev/null) ]]
 	then
-		if [[ /usr/bin/ffmpeg ]]
+		if [[ /usr/bin/ffmpeg || /usr/bin/avconv ]]
 			then
+				mkdir $out_path/$dir_name
+
+					if [[ /usr/bin/avconv ]]; then coder=/usr/bin/avconv; else
+					if [[ /usr/bin/ffmpeg ]]; then coder=/usr/bin/ffmpeg; else
+					echo 'neither /usr/bin/avconv nor /usr/bin/ffmpeg found in your system!'; exit 1 ;fi ;fi
+						
 				for a in *.flac; do
-				  < /dev/null ffmpeg -i "$a" -qscale: 1 $out_path/"${a[@]/%flac/mp3}"
-				done
-			else 
-				echo 'you have no ffmpeg in /usr/bin'
-			fi
+				  < /dev/null $coder -i "$a" -qscale: 1 $out_path/$dir_name/"${a[@]/%flac/mp3}"
+			done
+		fi
 	else 
 		echo 'you have no any flac tracks in ' $(pwd)
 fi
