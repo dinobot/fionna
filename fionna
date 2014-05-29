@@ -4,20 +4,29 @@
 out_path=/tmp
 dir_name=$(pwd | tr '/' '\n' | tail -n1 | tr ' ' '_')
 
+coder_av=$(which avconv)
+coder_ff=$(which ffmpeg)
+
+IFS=$'\n'
+
 if [[ $(ls *.flac 2>/dev/null) ]]
 	then
-		if [[ /usr/bin/ffmpeg || /usr/bin/avconv ]]
+		if [[ $coder_av || $coder_ff ]]
 			then
 				mkdir $out_path/$dir_name
 
-					if [[ /usr/bin/avconv ]]; then coder=/usr/bin/avconv; else
-					if [[ /usr/bin/ffmpeg ]]; then coder=/usr/bin/ffmpeg; else
+					if [[ $coder_av ]]; then coder=$coder_av; else
+					if [[ $coder_ff ]]; then coder=$coder_ff; else
 					echo 'neither /usr/bin/avconv nor /usr/bin/ffmpeg found in your system!'; exit 1 ;fi ;fi
 						
-				for a in *.flac; do
-				  < /dev/null $coder -i "$a" -qscale: 1 $out_path/$dir_name/"${a[@]/%flac/mp3}"
-			done
+				for a in *.flac; 
+				do
+					< /dev/null $coder -i "$a" -qscale: 1 $out_path/$dir_name/"${a[@]/%flac/mp3}"
+					echo $coder
+				done
 		fi
 	else 
 		echo 'you have no any flac tracks in ' $(pwd)
 fi
+
+unset IFS
