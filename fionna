@@ -15,14 +15,12 @@ if [[ $(ls *.flac 2>/dev/null) ]]
 			then
 				mkdir $out_path/$dir_name
 
-					if [[ $coder_av ]]; then coder=$coder_av; else
-					if [[ $coder_ff ]]; then coder=$coder_ff; else
+					if [[ $coder_av ]]; then coder=$coder_av; else if [[ $coder_ff ]]; then coder=$coder_ff; else
 					echo 'neither /usr/bin/avconv nor /usr/bin/ffmpeg found in your system!'; exit 1 ;fi ;fi
 						
-				for a in *.flac; 
+				for track in *.flac; 
 				do
-					< /dev/null $coder -i "$a" -qscale: 1 $out_path/$dir_name/"${a[@]/%flac/mp3}"
-					echo $coder
+					< /dev/null $coder -i "$track" -qscale: 1 $out_path/$dir_name/"${track[@]/%flac/mp3}"
 				done
 		fi
 	else 
