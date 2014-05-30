@@ -1,26 +1,46 @@
 #!/bin/bash
 
-function usage { echo "Usage: $0 [-s <45|90>] [-p <string>]"; 1>&2; exit 1; }
+function usage { 
+echo "help :"
+echo "	-p - output path for mp3 files
+	-l - use path to mount point of the last mounted disk
+	-v - show current version
+	-s - unmount disk and run low-level sorting of FAT partition
+	-h - show help"; exit 1; }
 function sharg { echo "s = ${s}"; echo "p = ${p}"; exit 0; }
 
-while getopts ":s:p:" o; do
+function convert
+{ 
+	echo ' ffmpeg '$path 'some options'
+}
+
+while getopts ":h:p:l:v:s:" o; do
     case "${o}" in
-        s)
-            s=${OPTARG}
-            ((s == 45 || s == 90)) || usage
+        h)
+		usage
             ;;
         p)
-            p=${OPTARG}
+            path=${OPTARG}
+		echo ${o}
+	    convert
             ;;
+	l) 
+	    echo $heedhelp
+	    echo ${OPTARG}
+	    ;;
+	v)
+
+	    ;;
+	s)
+
+	    ;;
         *)
-            usage
+	    echo 'use fionna -f for help'
+	    exit 1
             ;;
     esac
 done
-shift $((OPTIND-1))
+    
+if [ $# == 0 ]; then usage; fi
 
-if [ -z "${s}" ] || [ -z "${p}" ]; then
-    usage
-else
-    sharg
-fi
+shift $((OPTIND-1))
