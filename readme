@@ -19,7 +19,7 @@ Planned command lines options are:
 	-l --last - use path to mount point of the last mounted disk
 	-v --version - show current version
 	-s --sort - unmount disk and run low-level sorting of FAT partition (needed for some usb-mp3-enabled devices to play files in order of filenames instead an order of files written to disk)
-	
+	-h --help - show help
 
 Options and features planned fot 1.1:
 	-s --split - split given flac image to to flac tracks using given CUE file
