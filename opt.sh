@@ -29,7 +29,7 @@ while getopts ":h:p:l:v:s:" o; do
 	    echo ${OPTARG}
 	    ;;
 	v)
-
+	    echo 'version is :' $version
 	    ;;
 	s)
 
