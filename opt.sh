@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. version
+
 function usage { 
 echo "help :"
 echo "	-p - output path for mp3 files
@@ -41,6 +43,6 @@ while getopts ":h:p:l:v:s:" o; do
     esac
 done
     
-if [ $# == 0 ]; then usage; fi
+#if [ $# == 0 ]; then usage; fi
 
 shift $((OPTIND-1))
