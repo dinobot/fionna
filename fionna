@@ -14,7 +14,34 @@ echo "	-p - output path for mp3 files
 
 function convert
 { 
-	echo ' ffmpeg '$path 'some options'
+
+dir_name=$(pwd | tr '/' '\n' | tail -n1 | tr ' ' '_')
+
+coder_av=$(which avconv)
+coder_ff=$(which ffmpeg)
+
+IFS=$'\n'
+
+if [[ $(ls *.flac 2>/dev/null) ]]
+	then
+		if [[ $coder_av || $coder_ff ]]
+			then
+				mkdir $out_path/$dir_name
+
+					if [[ $coder_av ]]; then coder=$coder_av; else if [[ $coder_ff ]]; then coder=$coder_ff; else
+					echo 'neither /usr/bin/avconv nor /usr/bin/ffmpeg found in your system!'; exit 1 ;fi ;fi
+						
+				for track in *.flac; 
+				do
+					< /dev/null $coder -i "$track" -qscale: 1 $out_path/$dir_name/"${track[@]/%flac/mp3}"
+				done
+		fi
+	else 
+		echo 'you have no any flac tracks in ' $(pwd)
+fi
+
+unset IFS
+
 }
 
 function get_last_path
@@ -35,14 +62,14 @@ while getopts "hp:l:vs" o; do
 		usage
             ;;
         p)
-            path=${OPTARG}
+            out_path=${OPTARG}
 	    convert
             ;;
 	l)
 	   get_last_path
 
   	   if [ "${OPTARG}" == "y" ] || [ "${OPTARG}" == "yes" ]; then
-		path=$last_mount; convert
+		out_path=$last_mount; convert
 	   elif [ "${OPTARG}" == "l" ] || [ "${OPTARG}" == "list" ]; then 
 		echo $last_mount		
 	   else 
@@ -56,7 +83,7 @@ while getopts "hp:l:vs" o; do
 	    echo 'version is :' $version
 	    ;;
 	s)
-
+		# not yet
 	    ;;
         *)
 	    echo 'use fionna -h for help'
