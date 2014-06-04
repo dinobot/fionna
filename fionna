@@ -1,30 +1,70 @@
 #!/bin/bash
-#current version is 0.2
 
-out_path=/tmp
-dir_name=$(pwd | tr '/' '\n' | tail -n1 | tr ' ' '_')
+. version
 
-coder_av=$(which avconv)
-coder_ff=$(which ffmpeg)
+function usage 
+{ 
+echo "help :"
+echo "	-p - output path for mp3 files
+	-l - use path to mount point of the last mounted disk
+	-v - show current version
+	-s - unmount disk and run low-level sorting of FAT partition
+	-h - show help"; exit 1 
+}
 
-IFS=$'\n'
+function convert
+{ 
+	echo ' ffmpeg '$path 'some options'
+}
 
-if [[ $(ls *.flac 2>/dev/null) ]]
-	then
-		if [[ $coder_av || $coder_ff ]]
-			then
-				mkdir $out_path/$dir_name
-
-					if [[ $coder_av ]]; then coder=$coder_av; else if [[ $coder_ff ]]; then coder=$coder_ff; else
-					echo 'neither /usr/bin/avconv nor /usr/bin/ffmpeg found in your system!'; exit 1 ;fi ;fi
-						
-				for track in *.flac; 
-				do
-					< /dev/null $coder -i "$track" -qscale: 1 $out_path/$dir_name/"${track[@]/%flac/mp3}"
-				done
-		fi
+function get_last_path
+{
+	if [ "$(uname -s)" == "Darwin" ];then
+		last_mount=$(diskutil list | tail -n1 | awk '{print $NF}' | xargs diskutil info | grep 'Mount Point' | awk '{print $3}') 
+	elif [ "$(uname -s)" == "Linux" ];then
+		last_mount=$(mount | tail -n1 | cut -f3 -d' ')
+		echo $last_mount
 	else 
-		echo 'you have no any flac tracks in ' $(pwd)
-fi
+		echo 'looks like your system is not supported yet'
+	fi
+}
 
-unset IFS
+while getopts "hp:l:vs" o; do
+    case "${o}" in
+        h)
+		usage
+            ;;
+        p)
+            path=${OPTARG}
+	    convert
+            ;;
+	l)
+	   get_last_path
+
+  	   if [ "${OPTARG}" == "y" ] || [ "${OPTARG}" == "yes" ]; then
+		path=$last_mount; convert
+	   elif [ "${OPTARG}" == "l" ] || [ "${OPTARG}" == "list" ]; then 
+		echo $last_mount		
+	   else 
+		echo '-l list 
+			to show last path
+		      -l y || yes
+			to go'
+	   fi
+	    ;;
+	v)
+	    echo 'version is :' $version
+	    ;;
+	s)
+
+	    ;;
+        *)
+	    echo 'use fionna -h for help'
+	    exit 1
+            ;;
+    esac
+done
+    
+if [ $# == 0 ]; then usage; fi
+
+shift $((OPTIND-1))
