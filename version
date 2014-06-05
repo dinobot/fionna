@@ -1,1 +1,5 @@
-version=0.2
+version is 0.3
+
+Tested on Mac OS (Darwin). Will be able for linux very soon. 
+
+Known bug: if you will give -s option before -l or -p, it will try to unmount and sort disk before files written. 
