@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. version
+version=0.3
 
 function usage 
 { 
@@ -83,7 +83,14 @@ while getopts "hp:l:vs" o; do
 	    echo 'version is :' $version
 	    ;;
 	s)
-		# not yet
+		if [ "$(uname -s)" == "Darwin" ];then
+			diskutil unmount $(diskutil list | tail -n1 | awk '{print $NF}') 
+			sudo fatsort /dev/$(diskutil list | tail -n1 | awk '{print $NF}')	
+		elif [ "$(uname -s)" == "Linux" ];then
+			##sudo fatsort #
+			echo 'not ready'
+		fi
+		
 	    ;;
         *)
 	    echo 'use fionna -h for help'
